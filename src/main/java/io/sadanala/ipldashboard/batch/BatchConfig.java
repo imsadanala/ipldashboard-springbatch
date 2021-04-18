@@ -14,6 +14,7 @@ import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilde
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -29,13 +30,16 @@ public class BatchConfig {
             "neutral_venue", "team1", "team2", "toss_winner", "toss_decision", "winner", "result", "result_margin",
             "eliminator", "method", "umpire1", "umpire2" };
 
+    @Autowired
     public JobBuilderFactory jobBuilderFactory;
+
+    @Autowired
     public StepBuilderFactory stepBuilderFactory;
 
     @Bean
     public FlatFileItemReader<MatchInput> reader() {
         return new FlatFileItemReaderBuilder<MatchInput>().name("MatchItemReader")
-                .resource(new ClassPathResource("sample-data.csv")).delimited().names(FIELD_NAMES)
+                .resource(new ClassPathResource("match-data.csv")).delimited().names(FIELD_NAMES)
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<MatchInput>() {
                     {
                         setTargetType(MatchInput.class);
@@ -59,7 +63,7 @@ public class BatchConfig {
 
     @Bean
     public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
-        return jobBuilderFactory.get("importUserJob").incrementer(new RunIdIncrementer()).listener(listener).flow(step1)
+        return jobBuilderFactory.get("MatchDataJob").incrementer(new RunIdIncrementer()).listener(listener).flow(step1)
                 .end().build();
     }
 

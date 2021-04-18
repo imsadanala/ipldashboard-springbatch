@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Match {
     
-    private long id;
+    private String id;
     private String city;
     private LocalDate date;
     private String playerOfMatch;
@@ -20,10 +20,10 @@ public class Match {
     private String umpire1;
     private String umpire2;
     
-    public long getId() {
+    public String getId() {
         return id;
     }
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
     public String getCity() {

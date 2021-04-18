@@ -1,6 +1,8 @@
 package io.sadanala.ipldashboard.batch;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +14,15 @@ import io.sadanala.ipldashboard.model.Match;
 public class MatchDataProcessor implements ItemProcessor<MatchInput, Match> {
 
     public static Logger logger = LoggerFactory.getLogger(MatchDataProcessor.class);
+    DateTimeFormatter DATE_FORMAT =
+    new DateTimeFormatterBuilder().appendPattern("DD-MM-yyyy").toFormatter();
 
     @Override
     public Match process(final MatchInput input) throws Exception {
         Match match = new Match();
-        match.setId(Long.parseLong(input.getId()));
+        match.setId(input.getId());
         match.setCity(input.getCity());
-        match.setDate(LocalDate.parse(input.getDate()));
+        match.setDate(LocalDate.parse(input.getDate(), DATE_FORMAT));
         match.setPlayerOfMatch(input.getPlayer_of_match());
         match.setVenue(input.getVenue());
         String firstInningsTeam, secondInningsTeam;
