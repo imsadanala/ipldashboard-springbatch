@@ -2,9 +2,13 @@ package io.sadanala.ipldashboard.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Match {
-    
-    private String id;
+    @Id
+    private Long id;
     private String city;
     private LocalDate date;
     private String playerOfMatch;
@@ -20,10 +24,10 @@ public class Match {
     private String umpire1;
     private String umpire2;
     
-    public String getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getCity() {

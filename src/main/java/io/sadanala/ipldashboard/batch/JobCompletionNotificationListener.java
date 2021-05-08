@@ -12,24 +12,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class JobCompletionNotificationListener extends JobExecutionListenerSupport {
 
-    private static final Logger log = LoggerFactory.getLogger(JobCompletionNotificationListener.class);
+	private static final Logger log = LoggerFactory.getLogger(JobCompletionNotificationListener.class);
 
-    private final JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+	@Autowired
+	public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
-    @Override
-    public void afterJob(JobExecution jobExecution) {
-        if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-            log.info("!!! JOB FINISHED! Time to verify the results");
-            jdbcTemplate
-                    .query("SELECT team1, team2, date FROM match",
-                            (rs, row) -> "Team1: " + rs.getString("team1") + "Team2: " + rs.getString("team2")
-                                    + "Date: " + rs.getString("date"))
-                    .forEach(person -> log.info("Found <" + person + "> in the database."));
-        }
-    }
+	@Override
+	public void afterJob(JobExecution jobExecution) {
+		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+			log.info("!!! JOB FINISHED! Time to verify the results");
+			jdbcTemplate
+					.query("SELECT team1, team2, date FROM match",
+							(rs, row) -> "Team1: " + rs.getString("team1") + "Team2: " + rs.getString("team2")
+									+ "Date: " + rs.getString("date"))
+					.forEach(person -> log.info("Found <" + person + "> in the database."));
+		}
+	}
 }

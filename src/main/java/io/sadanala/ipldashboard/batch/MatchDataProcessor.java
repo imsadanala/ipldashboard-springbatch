@@ -15,31 +15,43 @@ public class MatchDataProcessor implements ItemProcessor<MatchInput, Match> {
 
     public static Logger logger = LoggerFactory.getLogger(MatchDataProcessor.class);
     DateTimeFormatter DATE_FORMAT =
-    new DateTimeFormatterBuilder().appendPattern("DD-MM-yyyy").toFormatter();
+    new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter();
 
     @Override
-    public Match process(final MatchInput input) throws Exception {
+    public Match process(final MatchInput matchInput) throws Exception {
         Match match = new Match();
-        match.setId(input.getId());
-        match.setCity(input.getCity());
-        match.setDate(LocalDate.parse(input.getDate(), DATE_FORMAT));
-        match.setPlayerOfMatch(input.getPlayer_of_match());
-        match.setVenue(input.getVenue());
+        match.setId(Long.parseLong(matchInput.getId()));
+        match.setCity(matchInput.getCity());
+
+        match.setDate(LocalDate.parse(matchInput.getDate()));
+
+        match.setPlayerOfMatch(matchInput.getPlayer_of_match());
+        match.setVenue(matchInput.getVenue());
+
+        // Set Team 1 and Team 2 depending on the innings order
         String firstInningsTeam, secondInningsTeam;
-        if ("bat".equals(input.getToss_winner())) {
-            firstInningsTeam = input.getToss_winner();
-            secondInningsTeam = input.getToss_winner().equals(input.getTeam1()) ? input.getTeam2() : input.getTeam1();
+
+        if ("bat".equals(matchInput.getToss_decision())) {
+            firstInningsTeam = matchInput.getToss_winner();
+            secondInningsTeam = matchInput.getToss_winner().equals(matchInput.getTeam1()) 
+                ? matchInput.getTeam2() : matchInput.getTeam1();
+
         } else {
-            secondInningsTeam = input.getToss_winner();
-            firstInningsTeam = input.getToss_winner().equals(input.getTeam1()) ? input.getTeam2() : input.getTeam1();
+            secondInningsTeam = matchInput.getToss_winner();
+            firstInningsTeam = matchInput.getToss_winner().equals(matchInput.getTeam1()) 
+                ? matchInput.getTeam2() : matchInput.getTeam1();
         }
         match.setTeam1(firstInningsTeam);
         match.setTeam2(secondInningsTeam);
-        match.setTossWinner(input.getToss_winner());
-        match.setTossDecision(input.getToss_decision());
-        match.setResult(input.getResult());
-        match.setUmpire1(input.getUmpire1());
-        match.setUmpire2(input.getUmpire2());
+
+        match.setTossWinner(matchInput.getToss_winner());
+        match.setTossDecision(matchInput.getToss_decision());
+        match.setMatchWinner(matchInput.getWinner());
+        match.setResult(matchInput.getResult());
+        match.setResultMargin(matchInput.getResult_margin());
+        match.setUmpire1(matchInput.getUmpire1());
+        match.setUmpire2(matchInput.getUmpire2());
+
         return match;
     }
 }
